@@ -6,8 +6,10 @@ const char* ssid     = "SSID";
 const char* password = "***********";
 
 //set pushing paramenter
-Sring apiKey = "XXXXXXXX"; //DevID code
-const char* server = "api.pushingbox.com";
+char devId[] = "XXXXXXXX"; //DevID code
+char serverName[] = "api.pushingbox.com";
+
+WiFiClient client;
 
 /* 
  * create a client WiFi-connection
@@ -38,6 +40,21 @@ void WiFiStart(const char* ssid,const char* password) {
   Serial.println(WiFi.localIP());            
 }
 
+/*
+ *Function for sending the request to PushingBox
+ */
+void sendToPushingBox(char devid[]){
+  if(client.connect(serverName, 80)) { 
+    client.print("GET /pushingbox?devid=");
+    client.print(devid);
+    client.println(" HTTP/1.1");
+    client.print("Host: ");
+    client.println(serverName);
+    client.println("User-Agent: Arduino");
+    client.println();
+  }  
+}
+
 void setup() {
   
   // start serial
@@ -56,16 +73,8 @@ void loop() {
     WiFiStart(ssid, password);
   }
 
-  if (client.connect(server,80)) { 
-    Serial.println("Connecting");
-      client.print("GET /pushingbox?devid=");
-      client.print(apiKey);
-      client.println(" HTTP/1.1");
-      client.print("Host: ");
-      client.println(server);
-      client.println("User-Agent: Arduino");
-      client.println();
-
+   //Sending request to PushingBox
+   sendToPushingBox(devId);
 
    //set ESP8266 to deepsleep
    ESP.deepSleep(0);
