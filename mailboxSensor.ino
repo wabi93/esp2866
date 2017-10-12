@@ -61,10 +61,10 @@ void sendToPushingBox(char devid[]){
  * Function for check battery charge condition
  */
 void checkBatteryChargeCondition {
-  float battlevel = analogRead(analogPin);
+  int battlevel = analogRead(A0);
   float voltage = battlevel * (batteryVoltage / 1024.0); 
   
-  if (voltage < 3,35){
+  if (voltage < (3,33*1024.0)){
     sendToPushingBox(devIdBattery);
   }
 }
