@@ -6,13 +6,15 @@ const char* ssid     = "SSID";
 const char* password = "***********";
 
 //set pushing paramenter
-char devId[] = "XXXXXXXX"; //DevID code
+char devIdMail[] = "XXXXXXXX"; //DevID code for incomming mail
+char devIdBattery[] = "XXXXXXXX"; //DevID code for emty battery 
 char serverName[] = "api.pushingbox.com";
 
 WiFiClient client;
+const float batteryVoltage = 3,75; //voltage of used battery
 
 /* 
- * create a client WiFi-connection
+ * Function for create a client WiFi-connection
  */
 void WiFiStart(const char* ssid,const char* password) {
   
@@ -46,13 +48,25 @@ void WiFiStart(const char* ssid,const char* password) {
 void sendToPushingBox(char devid[]){
   if(client.connect(serverName, 80)) { 
     client.print("GET /pushingbox?devid=");
-    client.print(devid);
+    client.print(devidMail);
     client.println(" HTTP/1.1");
     client.print("Host: ");
     client.println(serverName);
     client.println("User-Agent: Arduino");
     client.println();
   }  
+}
+
+/*
+ * Function for check battery charge condition
+ */
+void checkBatteryChargeCondition {
+  float battlevel = analogRead(analogPin);
+  float voltage = battlevel * (batteryVoltage / 1024.0); 
+  
+  if (voltage < 3,35){
+    sendToPushingBox(devIdBattery);
+  }
 }
 
 void setup() {
